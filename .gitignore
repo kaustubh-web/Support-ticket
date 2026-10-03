@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment files (Prevents exposing secrets)
+.env
+.env*.local
+!.env.example
+
+# Production builds
+dist/
+build/
+
+# Test coverage & logs
+coverage/
+*.log
+npm-debug.log*
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
