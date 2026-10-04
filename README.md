@@ -1,4 +1,6 @@
-# Ticket Desk — Support Ticket Tracker (MERN)
+﻿# Ticket Desk — Support Ticket Tracker (MERN)
+
+> 🚀 **Live Production URL:** [https://support-ticket-rho.vercel.app/](https://support-ticket-rho.vercel.app/)
 
 A modern full-stack support ticket management application built with the MERN stack: create tickets, track statuses and priorities, search/filter issues, and view real-time metrics.
 
@@ -12,11 +14,11 @@ A modern full-stack support ticket management application built with the MERN st
 ## Project Layout
 
 ```text
-support-tickets-mern/
+support-tickets/
 ├── backend/
 │   ├── src/
 │   │   ├── app.js              # Express app factory (CORS, JSON parser, route mounting)
-│   │   ├── index.js            # Server entry point: connects to MongoDB & listens on PORT
+│   │   ├── index.js            # Server entry point & serverless export
 │   │   ├── models/Ticket.js    # Mongoose schema (enums, timestamps, indexes, toJSON transform)
 │   │   ├── validation.js       # Zod schemas for pagination, query filters, creation, and updates
 │   │   ├── routes/tickets.js   # /api/tickets endpoints (CRUD + aggregation summary)
@@ -25,16 +27,17 @@ support-tickets-mern/
 │   └── tests/tickets.test.js   # Jest + Supertest + in-memory MongoDB test suite
 ├── frontend/
 │   ├── src/
-│   │   ├── api.js              # Centralized fetch wrapper targeting VITE_API_URL
+│   │   ├── api.js              # Centralized fetch wrapper targeting /api
 │   │   ├── constants.js        # Statuses, Priorities, and client validation mirroring backend Zod
 │   │   ├── main.jsx            # Application entry point with BrowserRouter (/ and /tickets/:id)
 │   │   ├── styles.css          # Responsive design tokens, badges, and layout styling
 │   │   ├── pages/              # TicketList.jsx (filter, sort, search, pagination), TicketDetail.jsx
 │   │   └── components/         # CreateTicketForm.jsx, Badges.jsx
-│   ├── vite.config.js          # Vite configuration
+│   ├── vite.config.js          # Vite configuration with local /api proxy
 │   └── index.html
 ├── docs/
 │   └── screenshots/            # Demonstration screenshots
+├── vercel.json                 # Vercel serverless build and routing configuration
 ├── .gitignore                  # Ignores node_modules, secrets (.env), and build artifacts
 └── README.md
 ```
@@ -59,7 +62,6 @@ support-tickets-mern/
    ```bash
    cp .env.example .env
    ```
-   *(On Windows Command Prompt: `copy .env.example .env`, or PowerShell: `cp .env.example .env`)*.
 
 3. Edit `backend/.env` with your MongoDB connection string:
    - **Local MongoDB**: `MONGODB_URI=mongodb://127.0.0.1:27017/support_tickets`
@@ -90,17 +92,12 @@ support-tickets-mern/
    cd frontend
    ```
 
-2. Create your `.env` file from the example:
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Install frontend dependencies:
+2. Install frontend dependencies:
    ```bash
    npm install
    ```
 
-4. Start the frontend development server:
+3. Start the frontend development server:
    ```bash
    npm run dev
    ```
@@ -112,10 +109,9 @@ support-tickets-mern/
 
 | Directory  | Variable        | Default / Example                                | Purpose |
 |------------|-----------------|--------------------------------------------------|---------|
-| `backend`  | `PORT`          | `5000`                                           | Port for the Express REST API |
+| `backend`  | `PORT`          | `5000`                                           | Port for the Express REST API (local) |
 | `backend`  | `MONGODB_URI`   | `mongodb://127.0.0.1:27017/support_tickets`      | MongoDB connection string (Atlas or Local) |
 | `backend`  | `CLIENT_ORIGIN` | `http://localhost:5173`                          | Allowed CORS origin for frontend requests |
-| `frontend` | `VITE_API_URL`  | `http://localhost:5000/api`                      | Backend base URL consumed by Vite |
 
 ---
 
@@ -144,7 +140,7 @@ All endpoints return JSON responses. Errors follow a consistent structure:
 | Method | Endpoint               | Query / Body Params                                  | Description |
 |:-------|:-----------------------|:-----------------------------------------------------|:------------|
 | `GET`  | `/api/health`          | None                                                 | Health-check status endpoint |
-| `GET`  | `/api/tickets`         | `q`, `status`, `priority`, `sort=newest\|oldest`, `page` | Paginated ticket list with filtering and search |
+| `GET`  | `/api/tickets`         | `q`, `status`, `priority`, `sort=newest|oldest`, `page` | Paginated ticket list with filtering and search |
 | `GET`  | `/api/tickets/summary` | None                                                 | Aggregate counts: `{ total, open, inProgress, resolved }` |
 | `GET`  | `/api/tickets/:id`     | `:id` in URL                                         | Retrieve details for a single ticket |
 | `POST` | `/api/tickets`         | `{ title, description, customerEmail, priority }`    | Create a new support ticket (Status defaults to `Open`) |
