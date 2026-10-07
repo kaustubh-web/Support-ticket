@@ -1,4 +1,4 @@
-﻿# Ticket Desk — Support Ticket Tracker (MERN)
+﻿# Ticket Desk — Support Ticket Tracker 
 
 > 🚀 **Live Production URL:** [https://support-ticket-rho.vercel.app/](https://support-ticket-rho.vercel.app/)
 
